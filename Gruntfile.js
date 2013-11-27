@@ -47,7 +47,7 @@ module.exports = function (grunt) {
           '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ]
-      }
+      },
     },
     express: {
       options: {
@@ -56,7 +56,9 @@ module.exports = function (grunt) {
       },
       livereload: {
         options: {
+          showStack: true,
           livereload: true,
+          serverreload: true,
           server: path.resolve('app.js'),
           bases: [path.resolve('./.tmp'), path.resolve(__dirname, yeomanConfig.app)]
         }
@@ -265,6 +267,24 @@ module.exports = function (grunt) {
     }
   });
 
+  grunt.task.registerTask('debug-config', 'Debug grunt task configuration.', function(select) {
+    grunt.log.debug('grunt.config: ' + (select ? select + ': ' : '') +
+      JSON.stringify(grunt.config(select), null, 2));
+  });
+
+  grunt.task.registerTask('fix-express-reload', 'Fix express reload watch task.', function(target) {
+    var taskname = 'express_' + target + '_server';
+    var config = grunt.config('watch.' + taskname);
+    if (config) {
+      grunt.log.debug('grunt.config: watch.' + taskname + ' ORIG: ' + JSON.stringify(config, null, 2));
+      config.files = [config.files, 'app.js'];
+      grunt.config('watch.' + taskname + '.files', config.files);
+      grunt.log.debug('grunt.config: watch.' + taskname + ' FIXED: ' + JSON.stringify(config, null, 2));
+    } else {
+      grunt.log.warn('Missing config for watch.' + taskname.cyan + '. Task express:' + target + ' is not running with serverreload:true.');
+    }
+  });
+
   grunt.registerTask('server', function (target) {
     if (target === 'dist') {
       return grunt.task.run(['build', 'open', 'express:dist', 'express-keepalive']);
@@ -274,8 +294,11 @@ module.exports = function (grunt) {
       'clean:server',
       'concurrent:server',
       'express:livereload',
-      'open',
-      'watch'
+      // 'open',
+      // 'debug-config:watch',
+      // 'debug-config:express',
+      'fix-express-reload:livereload',
+      'watch',
     ]);
   });
 
@@ -283,7 +306,7 @@ module.exports = function (grunt) {
     'clean:server',
     'concurrent:test',
     'express:test',
-    'karma'
+    'karma',
   ]);
 
   grunt.registerTask('build', [
@@ -297,7 +320,7 @@ module.exports = function (grunt) {
     'cssmin',
     'uglify',
     'rev',
-    'usemin'
+    'usemin',
   ]);
 
   grunt.registerTask('default', [
