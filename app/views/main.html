@@ -1,9 +1,19 @@
 <div class="hero-unit">
-  <h1>'Allo, 'Allo!</h1>
-  <p>You now have</p>
+  <h1>Listing users</h1>
+  <p ng-show="currentUser">Current user: {{ currentUser.name }}</p>
   <ul>
-      <li ng-repeat="thing in awesomeThings">{{thing}}</li>
+    <li ng-repeat="user in users"><a ng-click="changeUser(user)">{{user.name}}</a></li>
   </ul>
-  <p>installed.</p>
-  <h3>Enjoy coding! - Yeoman</h3>
+  <div ng-show="currentUser">
+    <h3>Tasks</h3>
+    <ul>
+      <li ng-repeat="task in currentTasks"><a ng-click="changeTask(task)">{{task.name}}</a></li>
+    </ul>
+    <div ng-show="currentTask">
+      <input type="text" ng-model="currentTask.name">
+      <button ng-click="createTask()" ng-show="!currentTask._id">Add</button>
+      <button ng-click="updateTask()" ng-show="currentTask._id">Update</button>
+      <button ng-click="clearTask()" ng-show="currentTask._id">Cancel</button>
+    </div>
+  </div>
 </div>

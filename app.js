@@ -1,6 +1,6 @@
 var express = require('express'),
-  routes = require('./routes'),
-  path = require('path');
+    routes = require('./routes'),
+    path = require('path');
 
 var app = express();
 app.directory = __dirname;
@@ -25,21 +25,27 @@ var Task = new mongoose.Schema({
 mongoose.model('user', User);
 mongoose.model('task', Task);
 
+var userController = baucis.rest('user');
+
+var taskController = baucis.rest('task');
+
 var taskSubcontroller = baucis.rest({
     singular: 'task',
-    basePath: '/:_id/tasks',
+    basePath: '/:user/tasks',
     publish: false
 });
 
 taskSubcontroller.query(function (request, response, next) {
-    request.baucis.query.where('user', request.params._id);
+    if (request.baucis.query) {
+        request.baucis.query.where('user', request.params.user);
+    }
+    if (request.body && !request.body.user) {
+        request.body.user = request.params.user;
+    }
     next();
 });
 
 taskSubcontroller.initialize();
-
-var userController = baucis.rest('user');
-var taskController = baucis.rest('task');
 
 userController.use(taskSubcontroller);
 
