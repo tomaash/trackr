@@ -10,10 +10,18 @@
       <li ng-repeat="task in currentTasks"><a ng-click="changeTask(task)">{{task.name}}</a></li>
     </ul>
     <div ng-show="currentTask">
-      <input type="text" ng-model="currentTask.name">
-      <button ng-click="createTask()" ng-show="!currentTask._id">Add</button>
-      <button ng-click="updateTask()" ng-show="currentTask._id">Update</button>
-      <button ng-click="clearTask()" ng-show="currentTask._id">Cancel</button>
+      <form class="form-inline">
+        <input type="text" ng-model="currentTask.name">
+        <button class="btn" ng-click="createTask()" ng-show="!currentTask._id">Add</button>
+        <button class="btn" ng-click="updateTask()" ng-show="currentTask._id">Update</button>
+        <button class="btn" ng-click="clearTask()" ng-show="currentTask._id">Cancel</button>
+      </form>
     </div>
+    <h3>Projects</h3>
+    <label class="checkbox"
+        ng-repeat="project in projects">
+      <input type="checkbox" ng-model="currentProjects[project._id]"> {{project.name}}
+    </label>
+    <button class="btn" ng-click="saveUser()">Save</button>
   </div>
 </div>

@@ -13,7 +13,15 @@ var baucis = require('baucis');
 
 mongoose.connect('mongodb://localhost/trackr');
 
-var User = new mongoose.Schema({name: String});
+var User = new mongoose.Schema({
+    name: String,
+    projects: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Project'
+        }
+    ]
+});
 var Task = new mongoose.Schema({
     name: String,
     user: {
@@ -22,12 +30,17 @@ var Task = new mongoose.Schema({
     }
 });
 
+var Project = new mongoose.Schema({
+    name: String
+});
+
 mongoose.model('user', User);
 mongoose.model('task', Task);
+mongoose.model('project', Project);
 
 var userController = baucis.rest('user');
-
 var taskController = baucis.rest('task');
+var projectController = baucis.rest('project');
 
 var taskSubcontroller = baucis.rest({
     singular: 'task',

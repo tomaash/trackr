@@ -3,6 +3,11 @@
 angular.module('trackrApp')
     .controller('MainCtrl', function ($scope, Restangular) {
         var userResource = Restangular.all('users');
+        var projectResource = Restangular.all('projects');
+
+        projectResource.getList().then(function(list){
+            $scope.projects = list;
+        });
 
         userResource.getList().then(function(list){
             $scope.users = list;
@@ -10,6 +15,10 @@ angular.module('trackrApp')
 
         $scope.changeUser = function (user) {
             $scope.currentUser = user;
+            $scope.currentProjects = {};
+            _.each(user.projects, function(id){
+                $scope.currentProjects[id] = true;
+            });
             $scope.clearTask();
             $scope.reloadTasks();
         };
@@ -36,4 +45,14 @@ angular.module('trackrApp')
                 $scope.reloadTasks();
             })
         };
+
+        $scope.saveUser = function () {
+            $scope.currentUser.projects = [];
+            _.each($scope.currentProjects, function(val, key){
+                if (val) {
+                    $scope.currentUser.projects.push(key)
+                }
+            });
+            $scope.currentUser.put();
+        }
     });
