@@ -5,6 +5,7 @@ angular.module('trackrApp')
         var userResource = Restangular.all('users');
         var projectResource = Restangular.all('projects');
         $scope.nameCreate="";
+        $scope.filter="";
 
         $scope.createUser = function () {
             userResource.post({name: $scope.nameCreate});
@@ -19,7 +20,11 @@ angular.module('trackrApp')
         };
 
         $scope.reloadUsers = function () {
-            userResource.getList({sort:'name'}).then(function (list) {
+            var params = {sort:'name'};
+            if ($scope.filter!="") {
+                params.conditions = JSON.stringify({name:{$regex:$scope.filter}});
+            }
+            userResource.getList(params).then(function (list) {
                 $scope.users = list;
             });
         };
@@ -65,14 +70,13 @@ angular.module('trackrApp')
             })
         };
 
-        $scope.saveUser = function () {
-            $scope.currentUser.projects = [];
-            _.each($scope.currentProjects, function (val, key) {
-                if (val) {
-                    $scope.currentUser.projects.push(key)
-                }
-            });
+        $scope.toggleProject = function (id) {
+            if ($scope.currentProjects[id]) {
+                $scope.currentUser.projects.push(id);
+            } else {
+                $scope.currentUser.projects = _.without($scope.currentUser.projects, id);
+            }
             delete $scope.currentUser.__v;
             $scope.currentUser.put();
-        }
+        };
     });

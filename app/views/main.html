@@ -1,17 +1,19 @@
 <div class="hero-unit">
   <h1>Listing users</h1>
-  <br ng-show="!currentUser"/>
-  <p ng-show="currentUser">Current user: {{ currentUser.name }}</p>
+  <br/>
   <form class="form-inline">
     <input type="text" ng-model="nameCreate">
     <button class="btn" ng-click="createUser()">Add user</button>
     <button class="btn" ng-click="createProject()">Add project</button>
   </form>
+  <div class="input-prepend">
+    <span class="add-on"><i class="icon-search"></i></span> <input type="text" ng-model="filter" ng-change="reloadUsers()">
+  </div>
   <ul>
     <li ng-repeat="user in users"><a ng-click="changeUser(user)">{{user.name}}</a></li>
   </ul>
   <div ng-show="currentUser">
-    <h3>Tasks</h3>
+    <h3>{{currentUser.name}}'s tasks</h3>
     <ul>
       <li ng-repeat="task in currentTasks"><a ng-click="changeTask(task)">{{task.name}}</a></li>
     </ul>
@@ -23,11 +25,10 @@
         <button class="btn" ng-click="clearTask()" ng-show="currentTask._id">Cancel</button>
       </form>
     </div>
-    <h3>Projects</h3>
+    <h3>projects</h3>
     <label class="checkbox"
         ng-repeat="project in projects">
-      <input type="checkbox" ng-model="currentProjects[project._id]"> {{project.name}}
+      <input type="checkbox" ng-change="toggleProject(project._id)" ng-model="currentProjects[project._id]"> {{project.name}}
     </label>
-    <button class="btn" ng-click="saveUser()">Save</button>
   </div>
 </div>
