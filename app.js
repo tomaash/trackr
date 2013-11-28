@@ -38,7 +38,9 @@ mongoose.model('user', User);
 mongoose.model('task', Task);
 mongoose.model('project', Project);
 
-var userController = baucis.rest('user');
+var userController = baucis.rest({
+    singular: 'user'
+});
 var taskController = baucis.rest('task');
 var projectController = baucis.rest('project');
 
@@ -59,9 +61,6 @@ taskSubcontroller.query(function (request, response, next) {
 });
 
 taskSubcontroller.initialize();
-
 userController.use(taskSubcontroller);
-
 app.use('/api/v1', baucis());
-
 module.exports = app;

@@ -1,6 +1,12 @@
 <div class="hero-unit">
   <h1>Listing users</h1>
+  <br ng-show="!currentUser"/>
   <p ng-show="currentUser">Current user: {{ currentUser.name }}</p>
+  <form class="form-inline">
+    <input type="text" ng-model="nameCreate">
+    <button class="btn" ng-click="createUser()">Add user</button>
+    <button class="btn" ng-click="createProject()">Add project</button>
+  </form>
   <ul>
     <li ng-repeat="user in users"><a ng-click="changeUser(user)">{{user.name}}</a></li>
   </ul>
