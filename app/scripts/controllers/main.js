@@ -67,6 +67,7 @@ angular.module('trackrApp')
         $scope.createTask = function () {
             $scope.currentUser.post('tasks', $scope.currentTask).then(function () {
                 $scope.reloadTasks();
+                $scope.clearTask();
             })
         };
 
